@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Evaluación de Servicios</title>
+    <style>
+        :root {
+            --primary-color: #0099cc;
+            --primary-dark: #007399;
+            --primary-light: #33b5e5;
+            --accent-color: #16B8A8;
+            --accent-dark: #129e91;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --background-light: #f0f8ff;
+            --background-white: #ffffff;
+            --border-radius: 10px;
+            --spacing: 24px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html, body {
+            min-width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0099cc, #007399);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%;
+            min-width: 320px;
+            max-width: 700px;
+            background: var(--background-white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+        }
+        
+        .corner-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: auto;
+            z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .form-header {
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        
+        .form-logo {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 15px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease;
+        }
+        
+        .form-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0 5px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+            transition: width 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        .form-section {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .section-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+            padding-left: 28px;
+        }
+        
+        .section-emoji {
+            margin-right: 10px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 153, 204, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .rating-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        @media (min-width: 500px) {
+            .rating-group {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .container {
+                padding: var(--spacing);
+            }
+            
+            .form-section {
+                padding: 25px;
+            }
+        }
+        
+        .rating-option {
+            width: 100%;
+        }
+        
+        input[type="radio"] {
+            display: none;
+        }
+        
+        .rating-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--background-white);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            height: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .rating-label:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .emoji {
+            font-size: 28px;
+            margin-bottom: 8px;
+            transition: transform 0.2s ease;
+        }
+        
+        .rating-label:hover .emoji {
+            transform: scale(1.2);
+        }
+        
+        input[type="radio"]:checked + .rating-label {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        textarea, 
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background-color: var(--background-white);
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            -webkit-appearance: none;
+            appearance: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(22, 184, 168, 0.2);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 16px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            -webkit-appearance: none;
+            appearance: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .submit-btn:hover::after {
+            left: 100%;
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(45deg, var(--accent-dark), var(--accent-color));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .required {
+            color: #f44336;
+            margin-left: 4px;
+        }
+        
+        .thank-you {
+            text-align: center;
+            display: none;
+            padding: 40px 20px;
+        }
+        
+        .thank-you h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+        
+        .thank-you-icon {
+            font-size: 70px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .optional-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-left: 5px;
+        }
+        
+        /* Añadir marca de agua profesional */
+        .watermark {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            opacity: 0.5;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Añadir efecto de carga para mejor UX */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Mejoras para el mensaje de agradecimiento */
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .checkmark-circle-bg {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            background: rgba(22, 184, 168, 0.1);
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+        }
+        
+        .checkmark-check {
+            font-size: 50px;
+            color: var(--accent-color);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .thank-you p {
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+        }
+
+/* Añadir estos estilos al final de la sección de estilos existente */
+
+.thank-you {
+    text-align: center;
+    padding: 40px 20px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.thank-you h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.thank-you p {
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto 15px;
+    color: var(--text-secondary);
+}
+
+.checkmark-circle {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 25px;
+    animation: scaleIn 0.5s ease-out 0.2s both;
+}
+
+.checkmark-circle-bg {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    background: rgba(22, 184, 168, 0.1);
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    animation: pulse 2s infinite;
+}
+
+.checkmark-check {
+    font-size: 60px;
+    color: var(--accent-color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: checkScale 0.5s ease-out 0.4s both;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes checkScale {
+    from { transform: translate(-50%, -50%) scale(0); }
+    to { transform: translate(-50%, -50%) scale(1); }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.dropbox.com/scl/fi/gohm0ukdpz6f3qboyfy7z/vectorizado.png?rlkey=enrllwj07ts2xbpf7rwo0ttsu&st=srvycqz3&dl=1" alt="Corner Logo" class="corner-logo">
+        
+        <div class="form-header">
+            <img src="https://dl.dropboxusercontent.com/scl/fi/lwsvorpe45s6nqvuvhvga/LOGO-03-BIENESTAR-official-1.png?rlkey=5ffe070b33294fcuo9nlypw49&st=6p8qb8qw" alt="Logo" class="form-logo">
+
+            <h1>𝑬𝑽𝑨𝑳𝑼𝑨 𝑵𝑼𝑬𝑺𝑻𝑹𝑶𝑺 𝑺𝑬𝑹𝑽𝑰𝑪𝑰𝑶𝑺.</h1>
+            <p class="subtitle">"𝑩𝒊𝒆𝒏𝒆𝒔𝒕𝒂𝒓 𝒔𝒐𝒎𝒐𝒔 𝒕𝒐𝒅𝒐𝒔"</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+        
+  
+  <div id="message" class="success"></div>
+  
+  <form id="satisfactionForm">
+    <div class="form-group">
+      <label for="career">QUE PROGRAMA TECNICO ESTUDIAS:</label>
+      <select id="career" name="carrera" required>
+        <option value="">Selecciona una carrera</option>
+        <option value="T.L En Auxiliar De Enfermería">T.L En Auxiliar De Enfermería</option>
+        <option value="T.L en Auxiliar En Servicios Farmacéuticos">T.L en Auxiliar En Servicios Farmacéuticos</option>
+        <option value="T.L En Cosmetología y Estética Integral">T.L En Cosmetología y Estética Integral</option>
+        <option value="T.L En Auxiliar Administración en salud">T.L En Auxiliar Administración en salud</option>
+        <option value="T.L En Auxiliar Mecánica Dental">T.L En Auxiliar Mecánica Dental</option>
+        <option value="T.L En Auxiliar Salud Oral">T.L En Auxiliar Salud Oral</option>
+        <option value="T.L En Auxiliar Belleza y Peluquería">T.L En Auxiliar Belleza y Peluquería</option>
+        <option value="T.L En Auxiliar De Clínica Veterinaria">T.L En Auxiliar De Clínica Veterinaria</option>
+        <option value="T.L En Servicio deportivos y de Recreación">T.L En Servicio deportivos y de Recreación</option>
+        <option value="T.L En Almacén y Bodega">T.L En Almacén y Bodega</option>
+        <option value="T.L En Auxiliar de Comercio Internacional">T.L En Auxiliar de Comercio Internacional</option>
+        <option value="T.L En Auxiliar de Operaciones Naviera y Portuaria">T.L En Auxiliar de Operaciones Naviera y Portuaria</option>
+        <option value="T.L En Auxiliar Logística y Transporte">T.L En Auxiliar Logística y Transporte</option>
+        <option value="T.L En Mercadeo y Ventas">T.L En Mercadeo y Ventas</option>
+        <option value="T.L En Investigación judicial y Criminalística">T.L En Investigación judicial y Criminalística</option>
+        <option value="T.L En Auxiliar Jurídico y De Tribunal">T.L En Auxiliar Jurídico y De Tribunal</option>
+        <option value="T.L En Lengua Inglesa">T.L En Lengua Inglesa</option>
+        <option value="T.L En Hotelería y Turismo">T.L En Hotelería y Turismo</option>
+        <option value="T.L En Cocina Nacional E Internacional">T.L En Cocina Nacional E Internacional</option>
+        <option value="T.L En Mesa y Bar">T.L En Mesa y Bar</option>
+        <option value="T.L En Recepción Hotelera">T.L En Recepción Hotelera</option>
+        <option value="T.L En Auxiliar De Vuelo Y Sobrecargo">T.L En Auxiliar De Vuelo Y Sobrecargo</option>
+        <option value="T.L En Auxiliar Contable y Financiero">T.L En Auxiliar Contable y Financiero</option>
+        <option value="T.L En Administración De Empresa">T.L En Administración De Empresa</option>
+        <option value="T.L En Auxiliar De Recursos Humanos">T.L En Auxiliar De Recursos Humanos</option>
+        <option value="T.L En Asistencia Gerencial y Administrativa">T.L En Asistencia Gerencial y Administrativa</option>
+        <option value="T.L En Auxiliar De Servicios Bancarios y Financieros">T.L En Auxiliar De Servicios Bancarios y Financieros</option>
+        <option value="T.L En Auxiliar De Cartera, Crédito y cobranza">T.L En Auxiliar De Cartera, Crédito y cobranza</option>
+        <option value="T.L En Asistencia A La Primera Infancia">T.L En Asistencia A La Primera Infancia</option>
+        <option value="T.L En Auxiliar de Compras, Inventarios y Suministro">T.L En Auxiliar de Compras, Inventarios y Suministro</option>
+        <option value="T.L En Auxiliar de información y servicio al cliente">T.L En Auxiliar de información y servicio al cliente</option>
+        <option value="T.L En Contact Center">T.L En Contact Center</option>
+        <option value="T.L En Marketing Digital y Publicidad">T.L En Marketing Digital y Publicidad</option>
+        <option value="T.L En Obras Civiles">T.L En Obras Civiles</option>
+        <option value="T.L En Electricidad Industrial">T.L En Electricidad Industrial</option>
+        <option value="T.L En Mecánica Diésel">T.L En Mecánica Diésel</option>
+        <option value="T.L En Mecánica Industrial">T.L En Mecánica Industrial</option>
+        <option value="T.L En Operador De Montacargas">T.L En Operador De Montacargas</option>
+        <option value="T.L En Proceso industrial">T.L En Proceso industrial</option>
+        <option value="T.L En Soldadura">T.L En Soldadura</option>
+        <option value="T.L En Refrigeración de Aires Acondicionados Domésticos">T.L En Refrigeración de Aires Acondicionados Domésticos</option>
+        <option value="T.L En Seguridad Ocupacional">T.L En Seguridad Ocupacional</option>
+        <option value="T.L En Seguridad Industrial">T.L En Seguridad Industrial</option>
+        <option value="T.L En Operador de Maquinaria Pesada">T.L En Operador de Maquinaria Pesada</option>
+        <option value="T.L En Sistemas">T.L En Sistemas</option>
+        <option value="T.L En Eléctrica y Mantenimiento De Computadoras">T.L En Eléctrica y Mantenimiento De Computadoras</option>
+        <option value="T.L En Electrónica y Telecomunicaciones">T.L En Electrónica y Telecomunicaciones</option>
+        <option value="T.L En Programación De Software">T.L En Programación De Software</option>
+        <option value="T.L En Programa De Videojuegos">T.L En Programa De Videojuegos</option>
+        <option value="T.L En Robótica, Automatización y Domótica">T.L En Robótica, Automatización y Domótica</option>
+        <option value="T.L En Locución Para Radio y TV">T.L En Locución Para Radio y TV</option>
+        <option value="T.L En Producción De Audio Digital">T.L En Producción De Audio Digital</option>
+        <option value="T.L En Auxiliar De Producción De Música">T.L En Auxiliar De Producción De Música</option>
+        <option value="T.L En Diseño De Modas">T.L En Diseño De Modas</option>
+        <option value="T.L En Diseño Gráfico y Artes Gráficas">T.L En Diseño Gráfico y Artes Gráficas</option>
+        <option value="T.L En Entrenamiento Deportivo">T.L En Entrenamiento Deportivo</option>
+        <option value="T.L En Asistencia Al Trabajo Social Y Comunitario">T.L En Asistencia Al Trabajo Social Y Comunitario</option>
+        <option value="T.L En Manejo Ambiental">T.L En Manejo Ambiental</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="semestre">SEMESTRE:</label>
+      <select id="semestre" name="semestre" required>
+        <option value="">Selecciona</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="hora">HORARIO:</label>
+      <div class="time-selector">
+        <select id="hora" name="hora" required>
+<option value="">Selecciona un horario</option>
+                            <option value="6:30 AM - 8:45 AM">6:30 AM - 8:45 AM</option>
+                            <option value="9:00 AM - 11:15 AM">9:00 AM - 11:15 AM</option>
+                            <option value="11:30 AM - 1:30 PM">11:30 AM - 1:30 PM</option>
+                            <option value="1:45 PM - 4:00 PM">1:45 PM - 4:00 PM</option>
+                            <option value="4:30 PM - 6:30 PM">4:30 PM - 6:30 PM</option>
+                            <option value="7:00 PM - 9:00 PM">7:00 PM - 9:00 PM</option>
+                        </optgroup>
+                        <optgroup label="Horarios Semipresenciales">
+                            <option value="6:45 AM - 12:15 PM">6:45 AM - 12:15 PM</option>
+                            <option value="12:45 PM - 6:15 PM">12:45 PM - 6:15 PM</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+  
+    <div class="categorias">
+      <!-- BIENESTAR -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="section-emoji">💙</span> SERVICIO DE BIENESTAR:
+                </h3>
+                <p class="section-description">
+                    Bienestar Institucional presta servicios de atencion psicosocial, cursos, seminario virtuales, campeonatos, Danza entre otros, atraves de las areas de desarrollo humano, permanencia, proyección social, deporte y recreacion y cultura y arte. 6° piso de la torre 2.
+                </p>
+        <select id="bienestar" name="bienestar" required>
+          <option value="">Selecciona</option>
+          <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+     <!-- CAFETERÍA -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="section-emoji">☕</span> SERVICIO DE CAFETERÍA:
+                </h3>
+                <p class="section-description">
+                    Atencion al usuario, ventas de bebidas, alimentos se encuentra ubicado en los pisos 1 y 3 te la torre 1 y piso 8 de la torre 2.
+                </p>
+        <select id="cafeteria" name="cafeteria" required>
+          <option value="">Selecciona</option>
+         <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+       
+
+     <!-- ADMISIONES -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="section-emoji">📝</span> SERVICIO DE ADMISIONES:
+                </h3>
+                <p class="section-description">
+                    Realizacion de certificados de estudio, constancia, cambio de horario, programa, aplazamiento, retiro , reintegro, solicitud de homologaciones, verificacion de notas y paz y salvo oficina piso 2 de la torre 1.
+                </p>
+        <select id="admisiones" name="admisiones" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+<!-- CARTERA -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="section-emoji">💰</span> SERVICIO DE CARTERA:
+                </h3>
+                <p class="section-description">
+                    Se realizan acuerdos de pago, estado de cuenta, matriculas de semestre y niveles de ingles, paz y salvo y liquidacion de constancias de estudio, certificados, homologaciones oficina en el piso 2 de la torre 1.
+                </p>
+        <select id="cartera" name="cartera" required>
+          <option value="">Selecciona</option>
+          <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+  <!-- CAJA -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">💵</span> SERVICIO DE CAJA:
+                </h3>
+                <p class="section-description">
+                    Los estudiantes pueden  realizar sus pagos en efectivo y a travès de taregeta esto para ralizar pago de cuota sea valor de matricula, seminarios, congresos entre otros. Esta habilitada una caja y dos cajas cuando se presenta congestión de caja. oficina piso 2 torre 2.
+                </p>
+        <select id="caja" name="caja" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+      <!-- PAPELERÍA -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">📄</span> SERVICIO DE PAPELERÍA:
+                </h3>
+                <p class="section-description">
+                    Servicios de venta de papeleria, insumos de bellleza y cosmetologia, drogueria entre otros productos de necesidad personal para mujeres y hombres oficina piso 1 torre 2.
+                </p>
+        <select id="papeleria" name="papeleria" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+       <!-- ACADÉMICA -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">🎓</span> SERVICIO DE ACADÉMICO:
+                </h3>
+                <p class="section-description">
+                   Esta oficina da respuesta a solicitudes realizada por estudiantes con relación a la ubicación de su salón, programacación academica, cambio de salones, asignacion de docentes, horarios, entre otros servicios. oficina piso 2 torre 1.
+                </p>
+        <select id="academica" name="academica" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+        <!-- BIBLIOTECA -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">📚</span> SERVICIO DE BIBLIOTECA:
+                </h3>
+                <p class="section-description">
+                   Espacio de aprendizaje abierto a estudiantes que requieran realizar consultas e investigaciones de tipo académico. También es utilizado para apoyo en tutorías académicas, desarrollo de cursos, reuniones de monitores, entre otras actividades. oficina piso 3 torre 1.
+                </p>
+        <select id="biblioteca" name="biblioteca" required>
+          <option value="">Selecciona</option>
+          <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+  <!-- BIBLIOTECA -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">🚪</span> SERVICIO DE PORTERIA:
+                </h3>
+                <p class="section-description">
+                  Control de entrada y salida de estudiantes, administrativos, docentes, informacion para ubicar clientes a las diferentes oficinas ubicados en la entrada de la fundacion.
+                </p>
+        <select id="porteria" name="porteria" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+     <!-- RECEPCIÓN -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">👋</span> SERVICIO DE RECEPCIÓN:
+                </h3>
+                <p class="section-description">
+                 Encargados de la matricula y recepcion de documentos de estudiantes nuevos, atencion al usuario, brindar informacion de las ofertas academicas, redireccionar a los estudiantes a las areas que soliciten, responder llamadas oficina piso 1 torre 1.
+                </p>
+        <select id="recepcion" name="recepcion" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+<!-- RECEPCIÓN -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">🚗</span> SERVICIO DE PARQUEADERO:
+                </h3>
+                <p class="section-description">
+                 Control de entrada y salida de motos y carros en la institucion ubicado en el parqueadero de la institucion.
+                </p>
+        <select id="parqueadero" name="parqueadero" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+         <!-- RECEPCIÓN -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">🎓</span>  PRACTICAS Y EGRESADOS:
+                </h3>
+                <p class="section-description">
+                 Brinda información y orientación en el inicio de la etapa de prácticas. Promueve la formación en orientación ocupacional dirigida a estudiantes de tercer semestre y debe garantizar las prácticas a los estudiantes de cuarto semestre que hayan culminado la etapa académica. De igual manera, debe realizar seguimiento y acompañamiento a los estudiantes vinculados a una empresa donde estén realizando sus prácticas, entre otros servicios. oficina piso 2 torre 1.
+                </p>
+        <select id="practica_agregados" name="practica_agregados" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+
+     <!-- RECEPCIÓN -->
+            <div class="form-section">
+                <h3 class="section-title">
+                     <span class="section-emoji">🧹</span> ASEO SALONES Y PASILLOS:
+                </h3>
+                <p class="section-description">
+                 Mantener los espacios de oficinas, salones, baños, pasillos limpios.
+                </p>
+        <select id="aseo" name="aseo" required>
+          <option value="">Selecciona</option>
+           <option>😊 Excelente</option>
+          <option>🙂 Bueno</option>
+          <option>😐 Regular</option>
+          <option>😠 Malo</option>
+        </select>
+      </div>
+    </div>
+
+<!-- Después de la sección de "ASEO SALONES Y PASILLOS" y antes de "SUGERENCIAS Y MEJORAS", añadir: -->
+
+<!-- TALLER DE UNIFORME -->
+<div class="form-section">
+    <h3 class="section-title">
+         <span class="section-emoji">👕</span> SERVICIO DE TALLER DE UNIFORME:
+    </h3>
+    <p class="section-description">
+     Servicios del Area de UNIFORMES: Se encarga de la elaboración, producción y entrega de uniformes a estudiantes vinvulados a programa tecnico y cursos Ubicado en la Av. Pedro de Heredia. 3er piso. Antigua sede del colegio bachillerato.
+    </p>
+    <select id="taller_uniforme" name="taller_uniforme" required>
+      <option value="">Selecciona</option>
+       <option>😊 Excelente</option>
+      <option>🙂 Bueno</option>
+      <option>😐 Regular</option>
+      <option>😠 Malo</option>
+    </select>
+</div>
+
+<!-- SERVICIO DE ENFERMERÍA -->
+<div class="form-section">
+    <h3 class="section-title">
+         <span class="section-emoji">🩺</span> SERVICIO DE ENFERMERÍA ESTUDIANTIL:
+    </h3>
+    <p class="section-description">
+     Servicio de ENFERMERIA ESTUDIANTIL: Asistir a la comunidad estudiantil en eventos de asistencia de primeros auxilios, activar protocolos de emeregencias que garantice la intervenvion oportuna de asistencia mediaca inmedianta entre otros Ubicado en el 3er piso de la torre 1. Laboratorio de enfermería.
+    </p>
+    <select id="enfermeria" name="enfermeria" required>
+      <option value="">Selecciona</option>
+       <option>😊 Excelente</option>
+      <option>🙂 Bueno</option>
+      <option>😐 Regular</option>
+      <option>😠 Malo</option>
+    </select>
+</div>
+
+<!-- OFICINA DE SISTEMAS -->
+<div class="form-section">
+    <h3 class="section-title">
+         <span class="section-emoji">💻</span> OFICINA DE SISTEMAS:
+    </h3>
+    <p class="section-description">
+     Servicios prestado por el area de SISTEMAS: Facilita el acceso a la red de wifi (internet) a la conunidad estudiantil, garantizar ambientes de aprendisajes con ayudas audiobisuales y acceso a tecnologias que faciliten el aprendisaje. Ubicado en el 5to piso de la torre 1.
+    </p>
+    <select id="sistemas" name="sistemas" required>
+      <option value="">Selecciona</option>
+       <option>😊 Excelente</option>
+      <option>🙂 Bueno</option>
+      <option>😐 Regular</option>
+      <option>😠 Malo</option>
+    </select>
+</div>
+
+<!-- OFICINA DE MERCADEO Y MARKETING -->
+<div class="form-section">
+    <h3 class="section-title">
+         <span class="section-emoji">📊</span> OFICINA DE MERCADEO Y MARKETING:
+    </h3>
+    <p class="section-description">
+    Servicios del area de MERCADEO y MARKETING: promueven los programas tecnicos, la ofertas de descuentos y a su vez administran las redes sociales, prpmueven la interacción y dan respuestas en la misma entre otras Ubicado en el 2do piso de la torre 1.
+    </p>
+    <select id="mercadeo" name="mercadeo" required>
+      <option value="">Selecciona</option>
+       <option>😊 Excelente</option>
+      <option>🙂 Bueno</option>
+      <option>😐 Regular</option>
+      <option>😠 Malo</option>
+    </select>
+</div>
+
+<!-- CALIDAD -->
+<div class="form-section">
+    <h3 class="section-title">
+        <span class="section-emoji">📋</span> OFICINA DE CALIDAD:
+    </h3>
+    <p class="section-description">
+       Los servicios de la oficina de CALIADAD son: Administrar las PQRSF (Peticiones-Quejas-Reclamos-Sugerencia-Felicitaciones) realizadas por los estudiantes. En esta funvion se encarga en hacer seguimiento para una respuesta oportuna hacia los estudiantes Ubicada en el 4to piso de la torre 1.
+    </p>
+    <select id="calidad" name="calidad" required>
+        <option value="">Selecciona</option>
+        <option>😊 Excelente</option>
+        <option>🙂 Bueno</option>
+        <option>😐 Regular</option>
+        <option>😠 Malo</option>
+    </select>
+</div>
+
+
+<!-- SUGERENCIAS Y MEJORAS -->
+<div class="form-section">
+    <h3 class="section-title">
+        <span class="section-emoji">💬</span> SUGERENCIAS Y MEJORAS:
+    </h3>
+    <p class="section-description">
+        Por favor comparte tus ideas o experiencia sobre cómo podemos mejorar nuestros servicios. Tu opinión es muy importante para nosotros.
+    </p>
+    <textarea id="sugerencias" name="sugerencias" placeholder="Escribe aquí tus sugerencias o comentarios..." required></textarea>
+</div>
+    
+
+    <div class="loading" id="loading">
+     Esperando hacer enviado...
+    </div>
+
+                   
+<button class="submit-btn" type="submit">Enviar 🚀</button>
+  </form>
+ © ELYON YIREH ✦ 2025          
+
+  <script>
+  // Reemplazar el script existente con esta versión actualizada
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('satisfactionForm');
+  const messageDiv = document.getElementById('message');
+  const loadingDiv = document.getElementById('loading');
+  const container = document.querySelector('.container');
+  
+  // URL del script de Google
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyelvxvry_By2wzAz7kKVXTXzlU0xZR6Zbz-iMejqJvEynyk7g6360LVqNhDQpVN2k/exec';
+  
+  // HTML para el mensaje de agradecimiento
+  const thankYouHTML = `
+    <div class="thank-you" id="thankYouMessage">
+      <div class="checkmark-circle">
+        <div class="checkmark-circle-bg"></div>
+        <span class="checkmark-check">✓</span>
+      </div>
+      <h2>¡Gracias por tu evaluación!</h2>
+      <p>Tu opinión es muy valiosa para nosotros y nos ayudará a mejorar nuestros servicios.</p>
+      <p>Tus respuestas han sido enviadas correctamente.</p>
+      <button class="submit-btn" onclick="location.reload()" style="margin-top: 20px;">LISTO</button>
+    </div>
+  `;
+  
+  // Verificar si el formulario se está enviando correctamente
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Mostrar el indicador de carga
+    loadingDiv.style.display = 'block';
+    messageDiv.style.display = 'none';
+    
+    // Crear un objeto FormData con los datos del formulario
+    const formData = new FormData(form);
+    
+    // Verificar explícitamente que todos los campos requeridos se están incluyendo
+    const sugerencias = document.getElementById('sugerencias').value;
+    formData.set("sugerencias", sugerencias);
+    
+    // Imprimir logs para depuración (si estás usando la consola del navegador)
+    console.log("Enviando formulario con los siguientes datos:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    
+    // Intentar enviar al script de Google
+    fetch(scriptURL, { 
+      method: 'POST', 
+      body: formData,
+      mode: 'cors'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error en la respuesta del servidor');
+      }
+      return response.text();
+    })
+    .then(data => {
+      // Éxito al enviar al script de Google
+      // Ocultar el formulario y mostrar el mensaje de agradecimiento
+      form.style.display = 'none';
+      const thankYouDiv = document.createElement('div');
+      thankYouDiv.innerHTML = thankYouHTML;
+      container.appendChild(thankYouDiv.firstElementChild);
+      document.getElementById('thankYouMessage').style.display = 'block';
+      
+      // Scroll hacia arriba para mostrar el mensaje
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Resetear el formulario en segundo plano
+      form.reset();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      
+      // Intentar guardar localmente como plan B
+      if (saveLocally(formData)) {
+        messageDiv.textContent = "✅ Los datos han sido guardados localmente. Serán enviados automáticamente cuando la conexión mejore.";
+        messageDiv.className = "success";
+        form.reset();
+      } else {
+        messageDiv.textContent = "❌ Error al enviar la respuesta. Por favor intenta nuevamente más tarde.";
+        messageDiv.className = "error";
+      }
+      messageDiv.style.display = "block";
+    })
+    .finally(() => {
+      // Ocultar el indicador de carga
+      loadingDiv.style.display = 'none';
+    });
+  });
+
+  // Implementación de una alternativa en caso de que el script de Google no funcione
+  function saveLocally(formData) {
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+    
+    // Guardamos en localStorage para una posible recuperación posterior
+    const savedData = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+    savedData.push({
+      timestamp: new Date().toISOString(),
+      data: data
+    });
+    localStorage.setItem('formSubmissions', JSON.stringify(savedData));
+    
+    return true;
+  }
+  
+  // Función para intentar reenviar datos guardados localmente
+  function trySendingLocalData() {
+    const savedData = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+    if (savedData.length === 0) return;
+    
+    const pending = [...savedData];
+    localStorage.setItem('formSubmissions', '[]');
+    
+    pending.forEach(item => {
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(item.data)) {
+        formData.append(key, value);
+      }
+      
+      fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' })
+      .catch(() => {
+        // Si falla, volver a guardar
+        const current = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+        current.push(item);
+        localStorage.setItem('formSubmissions', JSON.stringify(current));
+      });
+    });
+  }
+  
+  // Intentar enviar datos guardados cuando la página se carga
+  trySendingLocalData();
+});
+  </script>
+</body>
+</html>
